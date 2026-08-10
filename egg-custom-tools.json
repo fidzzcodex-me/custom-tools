@@ -228,6 +228,36 @@
       "user_editable": true,
       "rules": "nullable|string|max:10",
       "field_type": "text"
+    },
+    {
+      "name": "Enable Nginx",
+      "description": "Enable Nginx as a reverse proxy in front of your app.\nUseful for serving a website on a standard port.",
+      "env_variable": "ENABLE_NGINX",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Nginx Listen Port",
+      "description": "Port Nginx listens on (public-facing).",
+      "env_variable": "NGINX_PORT",
+      "default_value": "8080",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|integer|min:1024|max:65535",
+      "field_type": "text"
+    },
+    {
+      "name": "App Port",
+      "description": "Port your app listens on internally. Nginx will proxy to this.",
+      "env_variable": "APP_PORT",
+      "default_value": "3000",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|integer|min:1024|max:65535",
+      "field_type": "text"
     }
   ]
 }
