@@ -33,4 +33,4 @@ if [ -z "$STARTUP_CMD" ]; then
   exec /bin/bash
 fi
 
-eval "$STARTUP_CMD"
+eval "xvfb-run -a --server-args='-screen 0 1280x1024x24' $STARTUP_CMD"
