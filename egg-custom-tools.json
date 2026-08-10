@@ -1,0 +1,233 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-08-10",
+  "name": "Custom Tools",
+  "author": "fidzzcodex@codex.io",
+  "uuid": "a2119a89-a3f6-5db8-97d6-a3a3d27b969d",
+  "description": "Node.js & Python Terminal for Pterodactyl. Auto-detects runtime from startup command, webhook notifications, auto backup, web terminal, multi-server sync via rclone, Cloudflare Tunnel support.",
+  "features": [],
+  "docker_images": {
+    "ghcr.io/fidzzcodex-me/custom-tools:main": "ghcr.io/fidzzcodex-me/custom-tools:main"
+  },
+  "file_denylist": [],
+  "startup": "/bin/bash /entrypoint.sh",
+  "config": {
+    "files": "{}",
+    "startup": "{\"done\": \"$\"}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\napt-get update -y && apt-get install -y curl git wget unzip\necho \"Ready!\"",
+      "container": "ghcr.io/fidzzcodex-me/custom-tools:main",
+      "entrypoint": "/bin/bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Startup Command",
+      "description": "Command to run your application on server start.\nExamples: node index.js / npm start / python3 main.py",
+      "env_variable": "STARTUP_CMD",
+      "default_value": "node index.js",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string",
+      "field_type": "text"
+    },
+    {
+      "name": "Enable Cloudflare Tunnel",
+      "description": "Enable Cloudflare Zero Trust Tunnel to expose your server port to the internet.\nSet to true to enable. Requires CF_TOKEN to be set.",
+      "env_variable": "ENABLE_CF_TUNNEL",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Cloudflare Tunnel Token",
+      "description": "Token from Cloudflare Zero Trust dashboard > Networks > Tunnels.\nRequired if ENABLE_CF_TUNNEL is true. Keep this secret!",
+      "env_variable": "CF_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:500",
+      "field_type": "text"
+    },
+    {
+      "name": "User Upload Mode",
+      "description": "Skip git clone and allow manual file upload via File Manager.\nSet to true to enable manual upload mode.",
+      "env_variable": "USER_UPLOAD",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Access Token",
+      "description": "Personal Access Token for private repositories.",
+      "env_variable": "ACCESS_TOKEN",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:300",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Username",
+      "description": "Git username for private repositories.\nLeave blank for public repos.",
+      "env_variable": "USERNAME",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:100",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Branch",
+      "description": "Git branch to clone. Leave blank for default branch.",
+      "env_variable": "BRANCH",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:100",
+      "field_type": "text"
+    },
+    {
+      "name": "Auto Update on Restart",
+      "description": "Auto git pull every time server restarts.",
+      "env_variable": "AUTO_UPDATE",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Package Manager",
+      "description": "Package manager for auto-install dependencies (Node.js only).\nOptions: npm, pnpm, yarn, bun",
+      "env_variable": "INSTALL_DEPS",
+      "default_value": "npm",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:npm,pnpm,yarn,bun",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Repository Address",
+      "description": "Git repository URL to auto-clone on startup.\nLeave blank to skip.",
+      "env_variable": "GIT_ADDRESS",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:300",
+      "field_type": "text"
+    },
+    {
+      "name": "Enable Webhook Notifications",
+      "description": "Send notification when server starts.",
+      "env_variable": "WEBHOOK_URL",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:500",
+      "field_type": "text"
+    },
+    {
+      "name": "Webhook Custom Payload",
+      "description": "Custom JSON payload. Use {event}, {server}, {ip}, {time} as placeholders.",
+      "env_variable": "WEBHOOK_PAYLOAD",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:1000",
+      "field_type": "text"
+    },
+    {
+      "name": "Enable Auto Backup",
+      "description": "Automatically backup files to .yapa/backups folder.\nKeeps last 5 backups.",
+      "env_variable": "ENABLE_AUTO_BACKUP",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Backup Interval (Hours)",
+      "description": "How often to auto-backup, in hours.",
+      "env_variable": "BACKUP_INTERVAL_HOURS",
+      "default_value": "24",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|integer|min:1|max:168",
+      "field_type": "text"
+    },
+    {
+      "name": "Enable Web Terminal",
+      "description": "Access terminal from browser without Pterodactyl panel, via ttyd.",
+      "env_variable": "ENABLE_WEB_TERMINAL",
+      "default_value": "false",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|in:true,false,1,0",
+      "field_type": "text"
+    },
+    {
+      "name": "Web Terminal Port",
+      "description": "Port for web terminal access.",
+      "env_variable": "WEB_TERMINAL_PORT",
+      "default_value": "7681",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|integer|min:1024|max:65535",
+      "field_type": "text"
+    },
+    {
+      "name": "Multi-Server Sync Remote",
+      "description": "Rclone remote path for multi-server sync.\nLeave blank to disable. Use syncpush/syncpull commands in terminal.",
+      "env_variable": "SYNC_REMOTE",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:300",
+      "field_type": "text"
+    },
+    {
+      "name": "Rclone Config (base64)",
+      "description": "Base64-encoded rclone.conf for multi-server sync.",
+      "env_variable": "SYNC_CONFIG",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:2000",
+      "field_type": "text"
+    },
+    {
+      "name": "Node.js Version",
+      "description": "Node.js version to install if STARTUP_CMD is a Node command.\nDefault: 22 (LTS). Leave blank to use bundled.",
+      "env_variable": "NODE_VERSION",
+      "default_value": "22",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:5",
+      "field_type": "text"
+    },
+    {
+      "name": "Python Version",
+      "description": "Python version to use if STARTUP_CMD is a Python command.\nPre-installed: 3.11, 3.12, 3.13. Default: 3.13.",
+      "env_variable": "PYTHON_VERSION",
+      "default_value": "3.13",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:10",
+      "field_type": "text"
+    }
+  ]
+}
