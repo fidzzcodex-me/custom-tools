@@ -18,6 +18,7 @@ detect_and_setup_runtime
 CHROME_BIN=$(find /opt/browsers -maxdepth 3 -type f -name "chrome" 2>/dev/null | head -n1)
 if [ -n "$CHROME_BIN" ]; then
   export PUPPETEER_EXECUTABLE_PATH="$CHROME_BIN"
+  export CHROME_PATH="$CHROME_BIN"
 fi
 
 start_web_terminal
