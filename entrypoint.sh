@@ -11,6 +11,7 @@ source /scripts/git-setup.sh
 
 setup_git_repo
 
+setup_runtime_paths
 detect_and_setup_runtime
 
 start_web_terminal
