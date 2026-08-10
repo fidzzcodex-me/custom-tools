@@ -33,17 +33,25 @@ RUN for i in 1 2 3 4 5; do add-apt-repository -y ppa:deadsnakes/ppa && break || 
       python3.13 python3.13-venv \
       python3-pip \
     && rm -rf /var/lib/apt/lists/*
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
 RUN for i in 1 2 3 4 5; do add-apt-repository -y ppa:ondrej/php && break || sleep 5; done && \
     apt-get update -y && \
-    apt-get install -y \
-      php8.3 php8.3-cli php8.3-fpm php8.3-common \
-      php8.3-mysql php8.3-pgsql php8.3-sqlite3 \
-      php8.3-curl php8.3-gd php8.3-mbstring \
-      php8.3-xml php8.3-zip php8.3-bcmath php8.3-intl \
-      composer \
-    && rm -rf /var/lib/apt/lists/*
+    for v in 8.1 8.2 8.3 8.4; do \
+      apt-get install -y \
+        php$v php$v-cli php$v-fpm php$v-common \
+        php$v-mysql php$v-pgsql php$v-sqlite3 \
+        php$v-curl php$v-gd php$v-mbstring \
+        php$v-xml php$v-zip php$v-bcmath php$v-intl; \
+    done && \
+    apt-get install -y composer && \
+    rm -rf /var/lib/apt/lists/*
+RUN update-alternatives --install /usr/bin/php php /usr/bin/php8.1 81 && \
+    update-alternatives --install /usr/bin/php php /usr/bin/php8.2 82 && \
+    update-alternatives --install /usr/bin/php php /usr/bin/php8.3 83 && \
+    update-alternatives --install /usr/bin/php php /usr/bin/php8.4 84 && \
+    update-alternatives --set php /usr/bin/php8.3
+
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
 RUN apt-get update -y && apt-get install -y nginx && \
     rm -rf /var/lib/apt/lists/* && \
@@ -56,6 +64,7 @@ RUN apt-get update -y && apt-get install -y \
     libpango-1.0-0 libcairo2 fonts-liberation \
     libx11-6 libxext6 libxcb1 libxrender1 libxi6 \
     libgtk-3-0 libvulkan1 \
+    xvfb x11-utils xauth \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
@@ -63,7 +72,7 @@ RUN pip install --break-system-packages playwright && \
     python3 -m playwright install chromium --with-deps
 
 RUN . $NVM_DIR/nvm.sh && \
-    npm install -g playwright puppeteer && \
+    npm install -g playwright puppeteer puppeteer-real-browser puppeteer-extra puppeteer-extra-plugin-stealth && \
     npx --yes playwright install chromium --with-deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
