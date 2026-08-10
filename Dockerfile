@@ -18,7 +18,7 @@ RUN apt-get update -y && apt-get install -y \
 
 ENV NVM_DIR=/usr/local/nvm
 RUN mkdir -p $NVM_DIR && \
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    curl --retry 3 --retry-delay 2 -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 RUN . $NVM_DIR/nvm.sh && \
     nvm install 22 && \
     nvm alias default 22 && \
@@ -35,23 +35,46 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
+RUN add-apt-repository -y ppa:ondrej/php && \
+    apt-get update -y && \
+    apt-get install -y \
+      php8.3 php8.3-cli php8.3-fpm php8.3-common \
+      php8.3-mysql php8.3-pgsql php8.3-sqlite3 \
+      php8.3-curl php8.3-gd php8.3-mbstring \
+      php8.3-xml php8.3-zip php8.3-bcmath php8.3-intl \
+      composer \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update -y && apt-get install -y nginx && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f /etc/nginx/sites-enabled/default
+
 RUN apt-get update -y && apt-get install -y \
     libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
     libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 \
     libpango-1.0-0 libcairo2 fonts-liberation \
+    libx11-6 libxext6 libxcb1 libxrender1 libxi6 \
+    libgtk-3-0 libvulkan1 \
     && rm -rf /var/lib/apt/lists/*
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
 RUN pip install --break-system-packages playwright && \
     python3 -m playwright install chromium --with-deps
 
+RUN . $NVM_DIR/nvm.sh && \
+    npm install -g playwright puppeteer && \
+    npx --yes playwright install chromium --with-deps
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 RUN ARCH=$(dpkg --print-architecture) && \
-    curl -Lo /usr/local/bin/ttyd "https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.${ARCH}" && \
+    curl --retry 3 --retry-delay 2 -Lo /usr/local/bin/ttyd "https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.${ARCH}" && \
     chmod +x /usr/local/bin/ttyd
 
-RUN curl https://rclone.org/install.sh | bash
+RUN curl --retry 3 --retry-delay 2 https://rclone.org/install.sh | bash
 
 RUN ARCH=$(dpkg --print-architecture) && \
-    curl -Lo /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}" && \
+    curl --retry 3 --retry-delay 2 -Lo /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}" && \
     chmod +x /usr/local/bin/cloudflared
 
 WORKDIR /home/container
