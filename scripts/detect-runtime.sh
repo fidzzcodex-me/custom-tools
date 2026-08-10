@@ -37,6 +37,13 @@ detect_and_setup_runtime() {
         pip install --break-system-packages -r requirements.txt
       fi
       ;;
+
+    *php\ * | php* | *artisan\ *)
+      DETECTED_RUNTIME="PHP"
+      if [ -f "composer.json" ]; then
+        composer install --no-interaction
+      fi
+      ;;
   esac
 
   export DETECTED_RUNTIME
