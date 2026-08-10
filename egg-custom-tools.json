@@ -230,6 +230,16 @@
       "field_type": "text"
     },
     {
+      "name": "PHP Version",
+      "description": "PHP version to use if STARTUP_CMD is a PHP command.\nPre-installed: 8.1, 8.2, 8.3, 8.4. Default: 8.3.",
+      "env_variable": "PHP_VERSION",
+      "default_value": "8.3",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "nullable|string|max:5",
+      "field_type": "text"
+    },
+    {
       "name": "Enable Nginx",
       "description": "Enable Nginx as a reverse proxy in front of your app.\nUseful for serving a website on a standard port.",
       "env_variable": "ENABLE_NGINX",
