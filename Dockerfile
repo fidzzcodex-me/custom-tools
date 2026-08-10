@@ -34,7 +34,6 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa && \
       python3-pip \
     && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.13
 
 RUN apt-get update -y && apt-get install -y \
     libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
