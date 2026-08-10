@@ -5,7 +5,7 @@ ENV TZ=Asia/Jakarta
 
 RUN apt-get update -y && apt-get install -y \
     curl wget git unzip zip tar \
-    ca-certificates gnupg lsb-release \
+    ca-certificates gnupg dirmngr lsb-release \
     build-essential \
     software-properties-common \
     jq nano vim htop \
@@ -25,7 +25,7 @@ RUN . $NVM_DIR/nvm.sh && \
     npm install -g pnpm yarn bun
 ENV PATH="$NVM_DIR/versions/node/v22.0.0/bin:$PATH"
 
-RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+RUN for i in 1 2 3 4 5; do add-apt-repository -y ppa:deadsnakes/ppa && break || sleep 5; done && \
     apt-get update -y && \
     apt-get install -y \
       python3.11 python3.11-venv \
@@ -35,7 +35,7 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     && rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
-RUN add-apt-repository -y ppa:ondrej/php && \
+RUN for i in 1 2 3 4 5; do add-apt-repository -y ppa:ondrej/php && break || sleep 5; done && \
     apt-get update -y && \
     apt-get install -y \
       php8.3 php8.3-cli php8.3-fpm php8.3-common \
