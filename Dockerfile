@@ -28,8 +28,8 @@ ENV PATH="$NVM_DIR/versions/node/v22.0.0/bin:$PATH"
 RUN add-apt-repository -y ppa:deadsnakes/ppa && \
     apt-get update -y && \
     apt-get install -y \
-      python3.11 python3.11-venv python3.11-distutils \
-      python3.12 python3.12-venv python3.12-distutils \
+      python3.11 python3.11-venv \
+      python3.12 python3.12-venv \
       python3.13 python3.13-venv \
       python3-pip \
     && rm -rf /var/lib/apt/lists/*
