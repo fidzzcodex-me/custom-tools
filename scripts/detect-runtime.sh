@@ -12,6 +12,10 @@ setup_runtime_paths() {
   if [ -n "$PYTHON_VERSION" ] && command -v "python$PYTHON_VERSION" >/dev/null 2>&1; then
     update-alternatives --set python3 "/usr/bin/python$PYTHON_VERSION" >/dev/null 2>&1
   fi
+
+  if [ -n "$PHP_VERSION" ] && command -v "php$PHP_VERSION" >/dev/null 2>&1; then
+    update-alternatives --set php "/usr/bin/php$PHP_VERSION" >/dev/null 2>&1
+  fi
 }
 
 detect_and_setup_runtime() {
