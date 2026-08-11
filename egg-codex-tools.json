@@ -250,16 +250,6 @@
       "field_type": "text"
     },
     {
-      "name": "Console Username",
-      "description": "Nama yang tampil di console/prompt (menggantikan 'I have no name!'). Isi sesuai nama akun kamu di panel.",
-      "env_variable": "CONSOLE_USER",
-      "default_value": "container",
-      "user_viewable": true,
-      "user_editable": true,
-      "rules": "required|string|max:32|alpha_dash",
-      "field_type": "text"
-    },
-    {
       "name": "Enable Nginx",
       "description": "Enable Nginx as a reverse proxy in front of your app.\nUseful for serving a website on a standard port.",
       "env_variable": "ENABLE_NGINX",
