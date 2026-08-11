@@ -26,7 +26,7 @@ boot_step() {
 run_boot_animation() {
   clear 2>/dev/null
   print_logo
-  echo -e "  ${C_STEP}Booting ${CONSOLE_USER:-container}'s environment...${C_RESET}"
+  echo -e "  ${C_STEP}Booting root's environment...${C_RESET}"
   echo ""
   boot_step "Registering console identity"
   boot_step "Mounting workspace"
