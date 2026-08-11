@@ -101,7 +101,6 @@ RUN ARCH=$(dpkg --print-architecture) && \
 WORKDIR /home/container
 ENV HOME=/home/container
 ENV USER=container
-RUN chmod 666 /etc/passwd /etc/group
 
 COPY entrypoint.sh /entrypoint.sh
 COPY scripts/ /scripts/
