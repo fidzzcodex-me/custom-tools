@@ -3,6 +3,7 @@ cd /home/container || exit 1
 
 source /scripts/identity.sh
 source /scripts/banner.sh
+source /scripts/boot-animation.sh
 source /scripts/detect-runtime.sh
 source /scripts/webhook.sh
 source /scripts/backup.sh
@@ -12,6 +13,7 @@ source /scripts/git-setup.sh
 source /scripts/nginx.sh
 
 setup_identity
+run_boot_animation
 
 setup_git_repo
 
