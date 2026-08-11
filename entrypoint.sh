@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /home/container || exit 1
 
+source /scripts/identity.sh
 source /scripts/banner.sh
 source /scripts/detect-runtime.sh
 source /scripts/webhook.sh
@@ -9,6 +10,8 @@ source /scripts/web-terminal.sh
 source /scripts/tunnel.sh
 source /scripts/git-setup.sh
 source /scripts/nginx.sh
+
+setup_identity
 
 setup_git_repo
 
@@ -29,9 +32,15 @@ setup_nginx
 
 print_banner
 
+export HEADLESS_MODE="${HEADLESS_MODE:-true}"
+
 if [ -z "$STARTUP_CMD" ]; then
   echo -e "\033[1;33mNo STARTUP_CMD set. Dropping into shell.\033[0m"
   exec /bin/bash
 fi
 
-eval "xvfb-run -a --server-args='-screen 0 1280x1024x24' $STARTUP_CMD"
+if [ "$HEADLESS_MODE" = "false" ]; then
+  eval "xvfb-run -a --server-args='-screen 0 1280x1024x24' $STARTUP_CMD"
+else
+  eval "$STARTUP_CMD"
+fi
