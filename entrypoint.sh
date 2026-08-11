@@ -2,6 +2,7 @@
 cd /home/container || exit 1
 
 source /scripts/identity.sh
+source /scripts/sysinfo.sh
 source /scripts/banner.sh
 source /scripts/boot-animation.sh
 source /scripts/detect-runtime.sh
