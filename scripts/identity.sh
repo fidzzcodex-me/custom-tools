@@ -13,7 +13,7 @@ setup_identity() {
   export USER="$uname"
   export HOME=/home/container
 
-  local prompt='\[\e[1;32m\]'"${uname}"'\[\e[0m\]@\[\e[1;36m\]yapa-vps\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$ '
+  local prompt='\[\e[1;32m\]'"${uname}"'\[\e[0m\]@\[\e[1;36m\]codex\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$ '
 
   {
     echo "export PS1='${prompt}'"
