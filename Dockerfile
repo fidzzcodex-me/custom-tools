@@ -65,15 +65,27 @@ RUN apt-get update -y && apt-get install -y \
     libx11-6 libxext6 libxcb1 libxrender1 libxi6 \
     libgtk-3-0 libvulkan1 \
     xvfb x11-utils xauth \
+    libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 \
+    libwoff1 libopus0 libwebpdemux2 libharfbuzz-icu0 \
+    libenchant-2-2 libsecret-1-0 libhyphen0 libmanette-0.2-0 \
+    libgles2 libx264-dev \
+    fonts-noto fonts-noto-color-emoji fonts-noto-cjk fonts-dejavu-core \
+    locales tzdata \
+    && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen \
     && rm -rf /var/lib/apt/lists/*
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    TZ=Asia/Jakarta
 
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/browsers
 RUN pip install --break-system-packages playwright && \
-    python3 -m playwright install chromium --with-deps
+    python3 -m playwright install chromium firefox webkit --with-deps
 
 RUN . $NVM_DIR/nvm.sh && \
     npm install -g playwright puppeteer puppeteer-real-browser puppeteer-extra puppeteer-extra-plugin-stealth && \
-    npx --yes playwright install chromium --with-deps
+    npx --yes playwright install chromium firefox webkit --with-deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 RUN ARCH=$(dpkg --print-architecture) && \
@@ -89,6 +101,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 WORKDIR /home/container
 ENV HOME=/home/container
 ENV USER=container
+RUN chmod 666 /etc/passwd /etc/group
 
 COPY entrypoint.sh /entrypoint.sh
 COPY scripts/ /scripts/
