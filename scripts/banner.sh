@@ -30,7 +30,7 @@ print_banner() {
 
   echo ""
   echo -e "${C_ACCENT}  ╭──────────────────────────────────────────────╮${C_RESET}"
-  echo -e "${C_ACCENT}  │${C_RESET}  ${C_VALUE}${CONSOLE_USER:-container}'s VPS Console${C_RESET}"
+  echo -e "${C_ACCENT}  │${C_RESET}  ${C_VALUE}${CONSOLE_USER:-container}'s Console${C_RESET}"
   echo -e "${C_ACCENT}  ╰──────────────────────────────────────────────╯${C_RESET}"
   echo ""
   echo -e "  ${C_LABEL}OS${C_RESET}            : ${C_VALUE}${os_name}${C_RESET}"
