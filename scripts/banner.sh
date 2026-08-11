@@ -12,7 +12,7 @@ IP=$(hostname -I 2>/dev/null | awk '{print $1}')
 [ -z "$IP" ] && IP="unknown"
 
 print_banner() {
-  local node_ver python_ver php_ver os_name kernel cpu_cores ram_used ram_total disk_used disk_total uptime_str
+  local node_ver python_ver php_ver os_name kernel cpu_cores ram_str disk_used disk_total uptime_str
 
   node_ver=$(node -v 2>/dev/null || echo "not active")
   python_ver=$(python3 --version 2>/dev/null | awk '{print $2}' || echo "not active")
@@ -21,22 +21,21 @@ print_banner() {
   os_name=$(grep -oP '(?<=PRETTY_NAME=").*(?=")' /etc/os-release 2>/dev/null)
   [ -z "$os_name" ] && os_name="unknown"
   kernel=$(uname -r)
-  cpu_cores=$(nproc 2>/dev/null || echo "?")
-  ram_used=$(free -h 2>/dev/null | awk '/Mem:/ {print $3}')
-  ram_total=$(free -h 2>/dev/null | awk '/Mem:/ {print $2}')
+  cpu_cores=$(get_container_cpu_cores)
+  ram_str=$(get_container_memory)
   disk_used=$(df -h /home/container 2>/dev/null | awk 'NR==2 {print $3}')
   disk_total=$(df -h /home/container 2>/dev/null | awk 'NR==2 {print $2}')
-  uptime_str=$(uptime -p 2>/dev/null | sed 's/^up //')
+  uptime_str=$(get_container_uptime)
 
   echo ""
   echo -e "${C_ACCENT}  ╭──────────────────────────────────────────────╮${C_RESET}"
-  echo -e "${C_ACCENT}  │${C_RESET}  ${C_VALUE}${CONSOLE_USER:-container}'s Console${C_RESET}"
+  echo -e "${C_ACCENT}  │${C_RESET}  ${C_VALUE}root's Console${C_RESET}"
   echo -e "${C_ACCENT}  ╰──────────────────────────────────────────────╯${C_RESET}"
   echo ""
   echo -e "  ${C_LABEL}OS${C_RESET}            : ${C_VALUE}${os_name}${C_RESET}"
-  echo -e "  ${C_LABEL}Kernel${C_RESET}        : ${C_VALUE}${kernel}${C_RESET}"
+  echo -e "  ${C_LABEL}Kernel${C_RESET}        : ${C_VALUE}${kernel}${C_RESET} ${C_MUTED}(host-shared)${C_RESET}"
   echo -e "  ${C_LABEL}CPU Cores${C_RESET}     : ${C_VALUE}${cpu_cores}${C_RESET}"
-  echo -e "  ${C_LABEL}RAM${C_RESET}           : ${C_VALUE}${ram_used} / ${ram_total}${C_RESET}"
+  echo -e "  ${C_LABEL}RAM${C_RESET}           : ${C_VALUE}${ram_str}${C_RESET}"
   echo -e "  ${C_LABEL}Disk${C_RESET}          : ${C_VALUE}${disk_used} / ${disk_total}${C_RESET}"
   echo -e "  ${C_LABEL}Uptime${C_RESET}        : ${C_VALUE}${uptime_str}${C_RESET}"
   echo -e "  ${C_LABEL}IP Address${C_RESET}    : ${C_VALUE}${IP}${C_RESET}"
