@@ -29,6 +29,6 @@ NGINXEOF
   if [ $? -eq 0 ]; then
     nginx >/tmp/nginx.log 2>&1
   else
-    echo -e "\033[1;31m[nginx] config test failed, check /tmp/nginx-test.log\033[0m"
+    echo -e "${C_RED}[nginx] config test failed, check /tmp/nginx-test.log${C_RESET}"
   fi
 }
