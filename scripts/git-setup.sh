@@ -10,7 +10,7 @@ setup_git_repo() {
   fi
 
   if [ ! -d ".git" ]; then
-    echo -e "\033[0;36m[git] Cloning repository...\033[0m"
+    echo -e "${C_SKY}[git] Cloning repository...${C_RESET}"
     local branch_flag=""
     [ -n "$BRANCH" ] && branch_flag="-b $BRANCH"
     git clone $branch_flag "$repo_url" temp_clone 2>&1 | grep -v "$ACCESS_TOKEN"
@@ -21,7 +21,7 @@ setup_git_repo() {
       shopt -u dotglob
     fi
   elif [ "$AUTO_UPDATE" = "true" ]; then
-    echo -e "\033[0;36m[git] Pulling latest changes...\033[0m"
+    echo -e "${C_SKY}[git] Pulling latest changes...${C_RESET}"
     git pull 2>&1 | grep -v "$ACCESS_TOKEN"
   fi
 }
