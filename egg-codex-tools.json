@@ -250,6 +250,16 @@
       "field_type": "text"
     },
     {
+      "name": "Live Stats Interval",
+      "description": "Interval (detik) buat nge-print ulang uptime/RAM/disk di console selama container jalan. Set 0 buat matiin.",
+      "env_variable": "LIVE_STATS_INTERVAL",
+      "default_value": "30",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|integer|min:0|max:3600",
+      "field_type": "text"
+    },
+    {
       "name": "Enable Nginx",
       "description": "Enable Nginx as a reverse proxy in front of your app.\nUseful for serving a website on a standard port.",
       "env_variable": "ENABLE_NGINX",
