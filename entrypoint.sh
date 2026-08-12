@@ -1,10 +1,12 @@
 #!/bin/bash
 cd /home/container || exit 1
 
+source /scripts/theme.sh
 source /scripts/identity.sh
 source /scripts/sysinfo.sh
 source /scripts/banner.sh
 source /scripts/boot-animation.sh
+source /scripts/live-stats.sh
 source /scripts/detect-runtime.sh
 source /scripts/webhook.sh
 source /scripts/backup.sh
@@ -34,11 +36,12 @@ send_webhook_notification
 setup_nginx
 
 print_banner
+start_live_stats_ticker
 
 export HEADLESS_MODE="${HEADLESS_MODE:-true}"
 
 if [ -z "$STARTUP_CMD" ]; then
-  echo -e "\033[1;33mNo STARTUP_CMD set. Dropping into shell.\033[0m"
+  echo -e "${C_YELLOW}No STARTUP_CMD set. Dropping into shell.${C_RESET}"
   exec /bin/bash
 fi
 
