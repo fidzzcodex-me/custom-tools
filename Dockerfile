@@ -101,6 +101,10 @@ RUN ARCH=$(dpkg --print-architecture) && \
 WORKDIR /home/container
 ENV HOME=/home/container
 ENV USER=container
+RUN echo '' >> /etc/bash.bashrc && \
+    echo 'if [ -n "$CODEX_PS1" ]; then' >> /etc/bash.bashrc && \
+    echo '  PS1="$CODEX_PS1"' >> /etc/bash.bashrc && \
+    echo 'fi' >> /etc/bash.bashrc
 
 COPY entrypoint.sh /entrypoint.sh
 COPY scripts/ /scripts/
