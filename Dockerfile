@@ -53,10 +53,6 @@ RUN update-alternatives --install /usr/bin/php php /usr/bin/php8.1 81 && \
 
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
 
-RUN apt-get update -y && apt-get install -y nginx && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -f /etc/nginx/sites-enabled/default
-
 RUN apt-get update -y && apt-get install -y \
     libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libdrm2 libxkbcommon0 libxcomposite1 \
@@ -84,7 +80,7 @@ RUN pip install --break-system-packages playwright && \
     python3 -m playwright install chromium firefox webkit --with-deps
 
 RUN . $NVM_DIR/nvm.sh && \
-    npm install -g playwright puppeteer puppeteer-real-browser puppeteer-extra puppeteer-extra-plugin-stealth && \
+    npm install -g playwright puppeteer puppeteer-real-browser puppeteer-extra puppeteer-extra-plugin-stealth pm2 && \
     npx --yes playwright install chromium firefox webkit --with-deps
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
@@ -92,7 +88,6 @@ RUN ARCH=$(dpkg --print-architecture) && \
     curl --retry 3 --retry-delay 2 -Lo /usr/local/bin/ttyd "https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.${ARCH}" && \
     chmod +x /usr/local/bin/ttyd
 
-RUN curl --retry 3 --retry-delay 2 https://rclone.org/install.sh | bash
 
 RUN ARCH=$(dpkg --print-architecture) && \
     curl --retry 3 --retry-delay 2 -Lo /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}" && \
