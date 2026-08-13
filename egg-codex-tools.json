@@ -211,7 +211,7 @@
     },
     {
       "name": "Node.js Version",
-      "description": "Node.js version to install if STARTUP_CMD is a Node command.\nDefault: 22 (LTS). Leave blank to use bundled.",
+      "description": "Node.js version to use if STARTUP_CMD is a Node command.\nPre-installed: 18, 20, 22. Default: 22.",
       "env_variable": "NODE_VERSION",
       "default_value": "22",
       "user_viewable": true,
