@@ -20,10 +20,13 @@ ENV NVM_DIR=/usr/local/nvm
 RUN mkdir -p $NVM_DIR && \
     curl --retry 3 --retry-delay 2 -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 RUN . $NVM_DIR/nvm.sh && \
+    nvm install 18 && \
+    nvm install 20 && \
     nvm install 22 && \
     nvm alias default 22 && \
-    npm install -g pnpm yarn bun
-ENV PATH="$NVM_DIR/versions/node/v22.0.0/bin:$PATH"
+    npm install -g pnpm yarn bun && \
+    ln -s "$NVM_DIR/versions/node/$(nvm version default)" /usr/local/node-current
+ENV PATH="/usr/local/node-current/bin:$PATH"
 
 RUN for i in 1 2 3 4 5; do add-apt-repository -y ppa:deadsnakes/ppa && break || sleep 5; done && \
     apt-get update -y && \
