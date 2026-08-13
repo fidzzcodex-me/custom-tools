@@ -1,10 +1,7 @@
 #!/bin/bash
 
-IP=$(hostname -I 2>/dev/null | awk '{print $1}')
-[ -z "$IP" ] && IP="unknown"
-
 print_banner() {
-  local node_ver python_ver php_ver os_name kernel cpu_cores ram_str disk_used disk_total uptime_str
+  local node_ver python_ver php_ver os_name kernel cpu_cores ram_str disk_used disk_total uptime_str addr
 
   node_ver=$(node -v 2>/dev/null || echo "not active")
   python_ver=$(python3 --version 2>/dev/null | awk '{print $2}' || echo "not active")
@@ -18,6 +15,7 @@ print_banner() {
   disk_used=$(df -h /home/container 2>/dev/null | awk 'NR==2 {print $3}')
   disk_total=$(df -h /home/container 2>/dev/null | awk 'NR==2 {print $2}')
   uptime_str=$(get_container_uptime)
+  addr=$(get_server_address)
 
   echo ""
   echo -e "${C_MAUVE}  ╭──────────────────────────────────────────────╮${C_RESET}"
@@ -30,15 +28,15 @@ print_banner() {
   echo -e "  ${C_SKY}RAM${C_RESET}           : ${C_TEXT}${ram_str}${C_RESET}"
   echo -e "  ${C_SKY}Disk${C_RESET}          : ${C_TEXT}${disk_used} / ${disk_total}${C_RESET}"
   echo -e "  ${C_SKY}Uptime${C_RESET}        : ${C_TEXT}${uptime_str}${C_RESET}"
-  echo -e "  ${C_SKY}IP Address${C_RESET}    : ${C_TEXT}${IP}${C_RESET}"
+  echo -e "  ${C_SKY}Server Address${C_RESET}: ${C_TEXT}${addr}${C_RESET}"
   echo ""
   echo -e "  ${C_SKY}Node.js${C_RESET}       : ${C_TEXT}${node_ver}${C_RESET}"
   echo -e "  ${C_SKY}Python${C_RESET}        : ${C_TEXT}${python_ver}${C_RESET}"
   echo -e "  ${C_SKY}PHP${C_RESET}           : ${C_TEXT}${php_ver}${C_RESET}"
   echo -e "  ${C_SKY}Headless Mode${C_RESET} : ${C_TEXT}${HEADLESS_MODE:-true}${C_RESET}"
+  echo -e "  ${C_SKY}Process Manager${C_RESET}: ${C_TEXT}$([ "$PROCESS_MANAGER" = "true" ] && echo "PM2" || echo "off")${C_RESET}"
   echo ""
-  echo -e "  ${C_SKY}Nginx${C_RESET}         : $([ "$ENABLE_NGINX" = "true" ] && echo "${C_GREEN}http://${IP}:${NGINX_PORT:-8080}${C_RESET}" || echo "${C_OVERLAY}disabled${C_RESET}")"
-  echo -e "  ${C_SKY}Web Terminal${C_RESET}  : $([ "$ENABLE_WEB_TERMINAL" = "true" ] && echo "${C_GREEN}http://${IP}:${WEB_TERMINAL_PORT:-7681}${C_RESET}" || echo "${C_OVERLAY}disabled${C_RESET}")"
+  echo -e "  ${C_SKY}Web Terminal${C_RESET}  : $([ "$ENABLE_WEB_TERMINAL" = "true" ] && echo "${C_GREEN}http://${SERVER_IP:-?}:${WEB_TERMINAL_PORT:-7681} (protected)${C_RESET}" || echo "${C_OVERLAY}disabled${C_RESET}")"
   echo -e "  ${C_SKY}Tunnel${C_RESET}        : $([ "$ENABLE_CF_TUNNEL" = "true" ] && echo "${C_GREEN}Cloudflare${C_RESET}" || echo "${C_OVERLAY}disabled${C_RESET}")"
   echo -e "  ${C_SKY}Auto Backup${C_RESET}   : $([ "$ENABLE_AUTO_BACKUP" = "true" ] && echo "${C_GREEN}every ${BACKUP_INTERVAL_HOURS:-24}h${C_RESET}" || echo "${C_OVERLAY}disabled${C_RESET}")"
   echo ""
