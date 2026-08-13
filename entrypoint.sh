@@ -1,5 +1,14 @@
 #!/bin/bash
-cd /home/container || exit 1
+exec 2>&1
+
+echo "=== CODEX ENTRYPOINT: booting, waiting 5s for console to attach ==="
+sleep 5
+
+trap 'echo "=== CODEX ENTRYPOINT: FATAL exit, last command: $BASH_COMMAND (line $LINENO) ==="; sleep 8' EXIT
+
+set -x
+
+cd /home/container || { echo "FATAL: cd /home/container failed"; exit 1; }
 
 source /scripts/theme.sh
 source /scripts/identity.sh
@@ -46,6 +55,9 @@ FINAL_CMD="$STARTUP_CMD"
 if [ "$PROCESS_MANAGER" = "true" ] && [[ "$STARTUP_CMD" == node\ * ]]; then
   FINAL_CMD="pm2-runtime ${STARTUP_CMD#node }"
 fi
+
+set +x
+trap - EXIT
 
 if [ -z "$FINAL_CMD" ]; then
   echo -e "${C_YELLOW}No STARTUP_CMD set. Dropping into shell.${C_RESET}"
