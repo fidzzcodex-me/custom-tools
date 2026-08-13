@@ -8,7 +8,7 @@
   "name": "Codex Tools",
   "author": "fidzzcodex@codex.io",
   "uuid": "a2119a89-a3f6-5db8-97d6-a3a3d27b969d",
-  "description": "Node.js & Python Terminal for Pterodactyl. Auto-detects runtime from startup command, webhook notifications, auto backup, web terminal, multi-server sync via rclone, Cloudflare Tunnel support.",
+  "description": "Node.js, Python & PHP runtime for Pterodactyl dengan browser automation (Puppeteer/Playwright/puppeteer-real-browser), auto-detect runtime dari startup command, webhook notifications, auto backup, web terminal, dan Cloudflare Tunnel support.",
   "features": [],
   "docker_images": {
     "ghcr.io/fidzzcodex-me/codex-tools:main": "ghcr.io/fidzzcodex-me/codex-tools:main"
@@ -190,23 +190,23 @@
       "field_type": "text"
     },
     {
-      "name": "Multi-Server Sync Remote",
-      "description": "Rclone remote path for multi-server sync.\nLeave blank to disable. Use syncpush/syncpull commands in terminal.",
-      "env_variable": "SYNC_REMOTE",
-      "default_value": "",
+      "name": "Web Terminal Username",
+      "description": "Username buat login ke web terminal (basic auth).",
+      "env_variable": "WEB_TERMINAL_USER",
+      "default_value": "admin",
       "user_viewable": true,
       "user_editable": true,
-      "rules": "nullable|string|max:300",
+      "rules": "required|string|max:32",
       "field_type": "text"
     },
     {
-      "name": "Rclone Config (base64)",
-      "description": "Base64-encoded rclone.conf for multi-server sync.",
-      "env_variable": "SYNC_CONFIG",
-      "default_value": "",
+      "name": "Web Terminal Password",
+      "description": "WAJIB DIGANTI sebelum expose ke publik. Password buat login ke web terminal.",
+      "env_variable": "WEB_TERMINAL_PASSWORD",
+      "default_value": "changeme",
       "user_viewable": true,
       "user_editable": true,
-      "rules": "nullable|string|max:2000",
+      "rules": "required|string|min:6",
       "field_type": "text"
     },
     {
@@ -260,28 +260,18 @@
       "field_type": "text"
     },
     {
-      "name": "Enable Nginx",
-      "description": "Enable Nginx as a reverse proxy in front of your app.\nUseful for serving a website on a standard port.",
-      "env_variable": "ENABLE_NGINX",
+      "name": "Process Manager (PM2)",
+      "description": "true = jalankan app Node.js kamu lewat PM2, auto-restart kalau crash tanpa restart seluruh container. Cuma berlaku kalau STARTUP_CMD diawali 'node '.",
+      "env_variable": "PROCESS_MANAGER",
       "default_value": "false",
       "user_viewable": true,
       "user_editable": true,
-      "rules": "nullable|string|in:true,false,1,0",
-      "field_type": "text"
-    },
-    {
-      "name": "Nginx Listen Port",
-      "description": "Port Nginx listens on (public-facing).",
-      "env_variable": "NGINX_PORT",
-      "default_value": "8080",
-      "user_viewable": true,
-      "user_editable": true,
-      "rules": "nullable|integer|min:1024|max:65535",
+      "rules": "required|string|in:true,false",
       "field_type": "text"
     },
     {
       "name": "App Port",
-      "description": "Port your app listens on internally. Nginx will proxy to this.",
+      "description": "Port aplikasi kamu listen di dalamnya (misal Express server).",
       "env_variable": "APP_PORT",
       "default_value": "3000",
       "user_viewable": true,
