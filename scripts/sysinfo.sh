@@ -40,10 +40,8 @@ get_container_memory() {
 
   if [ -f /sys/fs/cgroup/memory.current ]; then
     used_bytes=$(cat /sys/fs/cgroup/memory.current 2>/dev/null)
-    limit_raw=$(cat /sys/fs/cgroup/memory.max 2>/dev/null)
   elif [ -f /sys/fs/cgroup/memory/memory.usage_in_bytes ]; then
     used_bytes=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes 2>/dev/null)
-    limit_raw=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null)
   fi
 
   if [ -z "$used_bytes" ]; then
@@ -51,13 +49,49 @@ get_container_memory() {
     return
   fi
 
-  if [ "$limit_raw" = "max" ] || [ -z "$limit_raw" ] || [ "$limit_raw" -ge 9000000000000000000 ] 2>/dev/null; then
-    limit_str="unlimited"
+  if [ -n "$SERVER_MEMORY" ] && [ "$SERVER_MEMORY" != "0" ]; then
+    limit_str="$(bytes_to_human "$((SERVER_MEMORY * 1024 * 1024))")"
   else
-    limit_str=$(bytes_to_human "$limit_raw")
+    if [ -f /sys/fs/cgroup/memory.max ]; then
+      limit_raw=$(cat /sys/fs/cgroup/memory.max 2>/dev/null)
+    elif [ -f /sys/fs/cgroup/memory/memory.limit_in_bytes ]; then
+      limit_raw=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes 2>/dev/null)
+    fi
+    if [ "$limit_raw" = "max" ] || [ -z "$limit_raw" ] || [ "$limit_raw" -ge 9000000000000000000 ] 2>/dev/null; then
+      limit_str="unlimited"
+    else
+      limit_str=$(bytes_to_human "$limit_raw")
+    fi
   fi
 
   echo "$(bytes_to_human "$used_bytes") / ${limit_str}"
+}
+
+get_memory_percent() {
+  local used_bytes limit_bytes
+  if [ -f /sys/fs/cgroup/memory.current ]; then
+    used_bytes=$(cat /sys/fs/cgroup/memory.current 2>/dev/null)
+  elif [ -f /sys/fs/cgroup/memory/memory.usage_in_bytes ]; then
+    used_bytes=$(cat /sys/fs/cgroup/memory/memory.usage_in_bytes 2>/dev/null)
+  fi
+  [ -z "$used_bytes" ] && { echo "-1"; return; }
+
+  if [ -n "$SERVER_MEMORY" ] && [ "$SERVER_MEMORY" != "0" ]; then
+    limit_bytes=$((SERVER_MEMORY * 1024 * 1024))
+    awk -v u="$used_bytes" -v l="$limit_bytes" 'BEGIN{printf "%d", (u/l)*100}'
+  else
+    echo "-1"
+  fi
+}
+
+get_server_address() {
+  if [ -n "$SERVER_IP" ] && [ -n "$SERVER_PORT" ]; then
+    echo "${SERVER_IP}:${SERVER_PORT}"
+  elif [ -n "$SERVER_IP" ]; then
+    echo "$SERVER_IP"
+  else
+    echo "unknown (SERVER_IP tidak di-set oleh Wings)"
+  fi
 }
 
 get_container_cpu_cores() {
